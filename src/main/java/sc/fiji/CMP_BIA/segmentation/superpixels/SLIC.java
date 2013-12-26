@@ -155,7 +155,7 @@ class SLIC {
 	/// Internal contour drawing option exists. One only needs to comment the if
 	/// statement inside the loop that looks at neighbourhood.
 	//=================================================================================
-    void DrawContoursAroundSegments(int[] ubuff, int[] labels, int width, int height, int color) {
+    void DrawContoursAroundSegments(int[] ubuff, int[] labels, int width, int height, @SuppressWarnings("unused") int color) {
         int[] dx8 = {-1, -1, 0, 1, 1, 1, 0, -1};
         int[] dy8 = {0, -1, -1, -1, 0, 1, 1, 1};
         
@@ -379,7 +379,7 @@ class SLIC {
             double[] kseedsy,
             int[] klabels,
             int STEP,
-            double[] edgemag,
+            @SuppressWarnings("unused") double[] edgemag,
             double M) {
         int sz = m_width * m_height;
         int numk = kseedsl.length;

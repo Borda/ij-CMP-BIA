@@ -2,7 +2,7 @@ We extends the ImageJ implementation by our java codes. This project mainly
 contains implementation or our methods as  plugin in ImageJ (or Fiji) 
 and some other useful API for image segmentation and registration 
 
-= Structure =
+# Structure #
 
 * plugins - place where all runnable plugins are located
 * classification
@@ -19,18 +19,18 @@ and some other useful API for image segmentation and registration
 * transform
 ** wavelets - wavelet transform for images, for instance Haar
 
-= Tutorials =
+# Tutorials #
 
 * http://fiji.sc/Introduction_into_Developing_Plugins
 * http://fiji.sc/Scripting_the_Trainable_Segmentation
 
 
-= How to use =
+# How to use #
 
 In following sections we briefly describe how to utilise some methods from this API
 
 
-== Writing plugins ==
+## Writing plugins ##
 
 Some tutorial how to write plugins in ImageJ you can find here:
 * http://www.gm.fh-koeln.de/~konen/WPF-BV/tutorial-ImageJ_V1.71.pdf
@@ -42,12 +42,12 @@ Notice, that all plugins should be located in the root of this source code
 and its name has to ends by an uderscore, e.g. example_.java
 
 
-== Simple interface ==
+## Simple interface ##
 
 Simple ImageJ interface when only one image enter into the process (e.g. single image segmentation)
 Look at the sample code and in this case it takes all gray and colour images, otherwise it throw error message. Then it does what ever with the image in the 'run' method.
 
-=== Sample code ===
+### Sample code ###
 
 	public class SLIC_superpixels_  implements PlugInFilter {
 		// handler to the image we work with
@@ -83,7 +83,7 @@ Look at the sample code and in this case it takes all gray and colour images, ot
 
 
 
-== Labelling structure ==
+## Labelling structure ##
 
 We introduced an interface to store general multi-class segmentations in nD space. This abstract cannot be used but it present which all methods have the all child classes contain.
 All the labels in the segmentation are represented as integer values from 0  to inf. It implicate that the segmentations can be initialised by nD int array.
@@ -95,7 +95,7 @@ Some of the interesting particular methods are:
 * showOverlayContours(ImagePlus img, int[][] neighborhood, java.awt.Color colour)
 
 
-=== Sample code ===
+### Sample code ###
 
 	// create any 2D int array
 	int[][] labels = ...
@@ -103,7 +103,7 @@ Some of the interesting particular methods are:
 
 
 
-== SLIC superpixels ==
+## SLIC superpixels ##
 
 This method is an implementation of the SLIC clustering in ImageJ (Java).
 The class initialisation takes an image to be processed and initialise all needed internal variables. 
@@ -114,7 +114,7 @@ Later on we can run the clustering process using method 'process' with four para
 * treshold - represent a stop criterion, when difference of measured internal error between two consecutive iteration decrease under 0.1*initial error distance (default value is 0.1)
 It returns the final labelling of Labelling class which can be easily visualised
 
-=== Sample code ===
+### Sample code ###
 
 	// load an image in format ImagePlus
 	ImagePlus image = IJ.openImage(path);
@@ -132,7 +132,7 @@ It returns the final labelling of Labelling class which can be easily visualised
 
 
 
-== Type conversions ==
+## Type conversions ##
 
 We found sometimes more useful to use native arrays of fixed size and then the dynamic lists on the output but some internal representations would be simpler to have dynamic. There is also needed some type conversion between our modules and used external libraries. So we created while static class only for these various conversions.
 Basically we convert: 
@@ -142,11 +142,11 @@ Basically we convert:
 
 
 
-== Wavelets ==
+## Wavelets ##
 
 We compute the Haar decomposition a single colour channel in 2D image where the input image has to be 2D array of floats
 
-=== Sample code ===
+### Sample code ###
 
 	float[][] image = new float[][]{
 			{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f}, 
@@ -163,13 +163,13 @@ We compute the Haar decomposition a single colour channel in 2D image where the 
 	TestTools.printMatrix( HaarWavelets.computeHaarForward(image) );	
 
 
-== Descriptors ==
+## Descriptors ##
 
 While we have a segmentation for instance SLIC superpixel clustering we can compute a set of features foe each element. These features can be used for additional segmentation according similarity among these elements.
 Before the initialisation we need to have the the segmentation already computed and enter it together with the image. (We assume that the image and related segmentation have the same size.)
 Computation of s feature descriptor is calling a particular method, so the feature selection and order depends only on the user. 
 
-=== Sample code ===
+### Sample code ###
 	
 	// load an image in format ImagePlus
 	ImagePlus image = IJ.openImage(path);
@@ -188,12 +188,12 @@ Computation of s feature descriptor is calling a particular method, so the featu
 
 
 
-== Segmentations ==
+## Segmentations ##
 
 We can compose the segmentation from some steps just described above. The segmentation pipeline is:
 SLIC superpixels - colour descriptors on these superpixels - estimation Gaussian Mixture Model - cluster superpixels by Maximal Aposteriory Probability
 
-=== Sample code ===
+### Sample code ###
 
 	// SLIC segmentation
 	jSLIC superpixels = new jSLIC(image);
