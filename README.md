@@ -27,7 +27,7 @@ and some other useful API for image segmentation and registration.
 ## ImageJ plugins ##
 
 * jSLIC superpixel segmentation (only 2D images)
-* Unsupervised multi-class segmentation (only 2D images)
-* Automatic Simultaneous Segmentation And fast Registration (ASSAR)
 
 ## Reference ##
+
+comming soon...
