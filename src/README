@@ -1,0 +1,220 @@
+We extends the ImageJ implementation by our java codes. This project mainly 
+contains implementation or our methods as  plugin in ImageJ (or Fiji) 
+and some other useful API for image segmentation and registration 
+
+= Structure =
+
+* plugins - place where all runnable plugins are located
+* classification
+** softMax - implementation of SoftMax classification
+* optimization
+** beliefPropagation - implementation of Belief Propagation optimisation
+* registration - the main package for all registration methods
+* segmentation - the main package for all segmentation methods
+** structures - the segmentation class for universal handling all possible segmentation; it keeps the segmentation structure and offer some other supplementary methods 
+** superpixels - implementation of superpixel segmentations (for now only SLIC)
+** tools - other segmentation tools such as segmentation descriptors or investigation seg. connectivity  
+* tools - other useful tolls without any special relation to seg. or reg.
+** converters - some structure converters between java and native structures or image (mainly colour) conversion
+* transform
+** wavelets - wavelet transform for images, for instance Haar
+
+= Tutorials =
+
+* http://fiji.sc/Introduction_into_Developing_Plugins
+* http://fiji.sc/Scripting_the_Trainable_Segmentation
+
+
+= How to use =
+
+In following sections we briefly describe how to utilise some methods from this API
+
+
+== Writing plugins ==
+
+Some tutorial how to write plugins in ImageJ you can find here:
+* http://www.gm.fh-koeln.de/~konen/WPF-BV/tutorial-ImageJ_V1.71.pdf
+* http://fiji.sc/wiki/index.php/Introduction_into_Developing_Plugins
+* http://rsbweb.nih.gov/ij/developer/index.html
+* ftp://ftp.stowers.org/pub/jru/ImageJ%20Plugins%20Tutorial/ImageJ%20plugins%20tutorial.pdf
+
+Notice, that all plugins should be located in the root of this source code 
+and its name has to ends by an uderscore, e.g. example_.java
+
+
+== Simple interface ==
+
+Simple ImageJ interface when only one image enter into the process (e.g. single image segmentation)
+Look at the sample code and in this case it takes all gray and colour images, otherwise it throw error message. Then it does what ever with the image in the 'run' method.
+
+=== Sample code ===
+
+	public class SLIC_superpixels_  implements PlugInFilter {
+		// handler to the image we work with
+		protected ImagePlus image;
+	
+		/**
+		 * This method gets called by ImageJ / Fiji to determine whether the current image is of an appropriate type.
+		 *
+		 * @param arg can be specified in plugins.config
+		 * @param image is the currently opened image
+		 * @see ij.plugin.filter.PlugInFilter#setup(java.lang.String, ij.ImagePlus)
+		 */
+		public int setup(String arg, ImagePlus img) {
+			this.image = img;
+			// check that we are working with RGB image
+			return DOES_RGB | DOES_8G | DOES_16 | DOES_32;
+		}
+	
+		/**
+		 * This method is run when the current image was accepted.
+		 *
+		 * @param ip is the current slice
+		 * @see ij.plugin.filter.PlugInFilter#run(ij.process.ImageProcessor)
+		 */
+		@Override
+		public void run(ImageProcessor ip) {
+			// TODO - some image processing here...
+		}
+	
+		void showAbout() { IJ.showMessage("About ...", "This ..."); } 
+		boolean showDialog() { return true;  }
+	}
+
+
+
+== Labelling structure ==
+
+We introduced an interface to store general multi-class segmentations in nD space. This abstract cannot be used but it present which all methods have the all child classes contain.
+All the labels in the segmentation are represented as integer values from 0  to inf. It implicate that the segmentations can be initialised by nD int array.
+Some of the interesting particular methods are:
+* getMaxLabel()
+* getLabelHist()
+* reLabel(int[] LUT)
+* showOverlayLabeling(ImagePlus img, double opticaly)
+* showOverlayContours(ImagePlus img, int[][] neighborhood, java.awt.Color colour)
+
+
+=== Sample code ===
+
+	// create any 2D int array
+	int[][] labels = ...
+	Labelling2D segm = new Labelling2D(labels);
+
+
+
+== SLIC superpixels ==
+
+This method is an implementation of the SLIC clustering in ImageJ (Java).
+The class initialisation takes an image to be processed and initialise all needed internal variables. 
+Later on we can run the clustering process using method 'process' with four parameters:
+* gSize - integer number representing the size of initial regular pixel grid
+* regul - float in range (0,1) with 0 as no regularization (the pixel distance is not taken into account) and 1 where the resulting segmentation is again nearly regular
+* maxIter - maximal number of iterations of clustering process (default value is 9)
+* treshold - represent a stop criterion, when difference of measured internal error between two consecutive iteration decrease under 0.1*initial error distance (default value is 0.1)
+It returns the final labelling of Labelling class which can be easily visualised
+
+=== Sample code ===
+
+	// load an image in format ImagePlus
+	ImagePlus image = IJ.openImage(path);
+	// init SLIC superpixels with the image to be processed
+	jSLIC sp = new jSLIC(image);
+	// SLIC processing with given parameters 
+	// where gSize is integer number of initial grid size 
+	// and regul is float in range (0,1) with 0 as no regularization
+	// sp.process(gSize, regul, iter, treshold);
+	sp.process(50, 0.25f, 9, 0.1f);
+	// SLIC returns a object of Segmentation structure/class
+	Labelling2D segm = sp.getSegmentation()
+	// present the segmentation results as overlapping the seg. over original image
+	segm.showOverlayLabeling(image, 0.5);
+
+
+
+== Type conversions ==
+
+We found sometimes more useful to use native arrays of fixed size and then the dynamic lists on the output but some internal representations would be simpler to have dynamic. There is also needed some type conversion between our modules and used external libraries. So we created while static class only for these various conversions.
+Basically we convert: 
+* dinamic list into static arrays and backward, for example nD Lists <-> nD arrays and PVectors (used in jMEF lib.) <-> float arrays
+* colour representations in various colour spaces
+* whole images, meaning again only the colour spaces, e.g. RGB -> CIE LAB
+
+
+
+== Wavelets ==
+
+We compute the Haar decomposition a single colour channel in 2D image where the input image has to be 2D array of floats
+
+=== Sample code ===
+
+	float[][] image = new float[][]{
+			{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f}, 
+			{0.f, 0.56f, 0.36f, 0.62f, 0.65f, 0.48f, 0.f, 0.f}, 
+			{0.f, 0.42f, 0.52f, 0.f, 0.f, 0.59f, 0.f, 0.f}, 
+			{0.f, 0.48f, 0.54f, 0.f, 0.f, 0.67f, 0.f, 0.f}, 
+			{0.f, 0.67f, 0.52f, 0.f, 0.f, 0.76f, 0.f, 0.f}, 
+			{0.f, 0.56f, 0.49f, 0.49f, 0.39f, 0.81f, 0.f, 0.f}, 
+			{0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f}};
+	System.out.println("Image: ");	
+	TestTools.printMatrix(image);
+	
+	System.out.println("Haar: ");	
+	TestTools.printMatrix( HaarWavelets.computeHaarForward(image) );	
+
+
+== Descriptors ==
+
+While we have a segmentation for instance SLIC superpixel clustering we can compute a set of features foe each element. These features can be used for additional segmentation according similarity among these elements.
+Before the initialisation we need to have the the segmentation already computed and enter it together with the image. (We assume that the image and related segmentation have the same size.)
+Computation of s feature descriptor is calling a particular method, so the feature selection and order depends only on the user. 
+
+=== Sample code ===
+	
+	// load an image in format ImagePlus
+	ImagePlus image = IJ.openImage(path);
+	// initialise the Descriptor class for 2D images
+	// assuming that labels is a segmentation in Labelling2D (e.g. see SLIC segm)
+	descriptors = new Descriptors2D(image, labels);
+	// compute some features
+	// compute the RGB colour means
+	descriptors.computeColourMeanRGB();
+	// compute the energy for the first 3 levels of Haar decomposition
+	descriptors.computeTextureWaveletsHaar(3);
+	// ask for the computed feature vector 
+	descList = descriptors.getDescMatrix();
+	// show in the output what are the values over all features and elements
+	descriptors.show();
+
+
+
+== Segmentations ==
+
+We can compose the segmentation from some steps just described above. The segmentation pipeline is:
+SLIC superpixels - colour descriptors on these superpixels - estimation Gaussian Mixture Model - cluster superpixels by Maximal Aposteriory Probability
+
+=== Sample code ===
+
+	// SLIC segmentation
+	jSLIC superpixels = new jSLIC(image);
+	superpixels.process(slicSize, slicRegul);
+	Labelling2D labels = superpixels.getSegmentation();
+		
+	// compute descriptors - colour means
+	Descriptors2D descriptors = new Descriptors2D(image, labels);
+	descriptors.computeColourMeanRGB();
+	float[][] descList = descriptors.getDescMatrix();
+	
+	// Estimate Gaussian Mixture Model
+	ExponentMixtureModel gmm = new ExponentMixtureModel(new MultivariateGaussian(), descList);
+	gmm.initBregmanSoftClustering( nbClasses );
+	gmm.printModel();
+	
+	// relabel the segmentation according estimated Maximal Aposteriory Probab.
+	int[] LUT = gmm.MAP();
+	labels.reLabel(LUT);
+
+	// final visualisation of segmented image
+	labels.showOverlayLabeling(image, 0.2);
+
+	
