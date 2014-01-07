@@ -6,6 +6,8 @@ package sc.fiji.CMP_BIA.tools;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.apache.commons.math.linear.RealMatrix;
+
 /**
  * @author borovji3
  *
@@ -125,6 +127,10 @@ public class Prints {
 			}
 			System.out.println();
 		}
+	}
+	
+	public static void printRealMatrix(RealMatrix m) {
+		printMatrix(m.getData());
 	}
 	
 }

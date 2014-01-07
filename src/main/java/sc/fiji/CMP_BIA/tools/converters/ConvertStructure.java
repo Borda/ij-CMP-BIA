@@ -112,6 +112,27 @@ public class ConvertStructure {
 		}
 		return res;
 	}
+
+	
+	/**
+	 * convert the convert 'ArrayList<ArrayList<Float>>' to standard 'float[][]'
+	 * 
+	 * @param list
+	 * @return float[][]
+	 */
+	public static double[][] arrayLists2doubleMatrix (final ArrayList<ArrayList<Float>> list) {
+		// init new array of the same size
+		double[][] res = new double[list.size()][];
+		// init arrays
+		for (int i=0; i<list.size(); i++) {
+			res[i] = new double[list.get(i).size()];
+			// rewrite all values to new array
+			for (int j=0; j<list.get(i).size(); j++) {
+				res[i][j] = (double) list.get(i).get(j);
+			}
+		}
+		return res;
+	}
 	
 	/**
 	 * convert the convert 'ArrayList<ArrayList<Integer>>' to standard 'int[][]'
@@ -148,20 +169,37 @@ public class ConvertStructure {
 		}
 		return res;
 	}
-	
+
 	
 	/**
 	 * 
 	 * @param m is matrix of a 'Number'
 	 * @return float[][]
 	 */
-	public static <T extends Number> float[][] NumberMatrix2floatMatrix(final T[][] m) {
+	public static <T extends Number> float[][] numberMatrix2floatMatrix(final T[][] m) {
 		// init matrix
 		float[][] res = new float[m.length][m[0].length];
 		// over all data for summing
 		for(int i=0; i<m.length; i++) {
 			for (int j=0; j<m[i].length; j++) {
 				res[i][j] = m[i][j].floatValue();
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * 
+	 * @param m is matrix of a double
+	 * @return float[][]
+	 */
+	public static float[][] doubleMatrix2floatMatrix(final double[][] m) {
+		// init matrix
+		float[][] res = new float[m.length][m[0].length];
+		// over all data for summing
+		for(int i=0; i<m.length; i++) {
+			for (int j=0; j<m[i].length; j++) {
+				res[i][j] = (float)m[i][j];
 			}
 		}
 		return res;

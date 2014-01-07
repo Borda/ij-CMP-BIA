@@ -7,6 +7,7 @@ package sc.fiji.CMP_BIA.segmentation.superpixels;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import sc.fiji.CMP_BIA.segmentation.structures.Labelling;
 import sc.fiji.CMP_BIA.segmentation.structures.Labelling2D;
 import sc.fiji.CMP_BIA.segmentation.tools.Connectivity2D;
 import sc.fiji.CMP_BIA.tools.Logging;
@@ -184,6 +185,7 @@ public class jSLICe extends jSLIC {
 		}
 		
 		// relabelling
+		lut = Labelling.determineContinuousLabelling(lut);
 		lb.reLabel(lut);
 		
 		labels2D = lb.getData();

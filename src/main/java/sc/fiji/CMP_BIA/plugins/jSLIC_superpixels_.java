@@ -7,7 +7,6 @@ import java.awt.Color;
 
 import sc.fiji.CMP_BIA.segmentation.superpixels.jSLICe;
 import sc.fiji.CMP_BIA.tools.Logging;
-
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -68,7 +67,7 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 	 * 
 	 * @return true if user chose OK
 	 */
-	protected boolean showDialog() {
+	protected boolean showConfigDialog() {
 		assert (clrStr.length == clrs.length);
 		// Create interface window
 		GenericDialog gd = new GenericDialog("jSLIC segmentation");
@@ -107,7 +106,7 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 	public void run(ImageProcessor ip) {
 						
 		// if the user clicks "OK"
-		if ( showDialog() ) {		
+		if ( showConfigDialog() ) {		
 			
 			try {
 				image.lock();
@@ -143,7 +142,7 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 		sp.process(gSize, regul);
 		
 		estimTime = System.currentTimeMillis() - startTime;
-		ij.IJ.log("jSLIC process took " + Long.toString(estimTime) + "ms.");
+		ij.IJ.log("jSLIC process took " + Float.toString((float)estimTime/1000) + "s");
 		IJ.showProgress(90.);
 		
 		printInfo("jSLIC visualisation...");
@@ -192,13 +191,12 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 	 * content of About frame
 	 */
 	public void showAbout() {
-		// TODO
 	    IJ.showMessage("About jSLIC...",
-	                   "Simple Linear Iterative Clustering (SLIC)\n"+
+	                   "Simple Linear Iterative Clustering (jSLIC)\n"+
 	                   "Implemented: Jiri Borovec <jiri.borovec@fel.cvut.cz>\n"+
-	                   "Version: 0.1 (22/11/2013)\n"+
+	                   "Version: 0.2 (22/12/2013)\n"+
 	                   "This is jSLIC superpixel segmentation for 2D images only for RGB and and gray images.\n"+
-	                   "Ref: http://infoscience.epfl.ch/record/177415"
+	                   "Ref: http://fiji.sc/CMP-BIA_tools"
 	                   );
 	  } 
 	

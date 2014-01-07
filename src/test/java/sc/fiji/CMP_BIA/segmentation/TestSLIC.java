@@ -27,6 +27,7 @@ public class TestSLIC {
 		// init image / load
 		if ( (new File(path)).exists() ) {
 			img = new ImagePlus( path );
+			img.show();
 		}
 	}
 	
@@ -34,7 +35,7 @@ public class TestSLIC {
 	 * 
 	 */
 	@Test
-	public void test_SLIC() {
+	public void test_jSLIC() {
 		Prints.printTitle("SLIC superpixels");
 
 		if (img != null) {

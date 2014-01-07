@@ -32,6 +32,10 @@ abstract public class Descriptors<T extends Labelling> {
 	protected T segmentation = null;
 	// vector of descriptors of size nbLabels x nbDesc
 	protected ArrayList<ArrayList<Float>> feaures;
+	// number of segments
+	protected int nbSegments = 0;
+	// 
+	protected int nbFeatures = 0;
 	
 	/**
 	 * Constructor which asked for a image and its reliable segmentation  
@@ -58,8 +62,18 @@ abstract public class Descriptors<T extends Labelling> {
 	 * 
 	 * @return float[nbSegments][nbDesc] descriptors for each segment
 	 */
-	public float[][] getDescMatrix() {
+	public float[][] getDescMatrixFloat() {
 		float[][] res = ConvertStructure.arrayLists2floatMatrix(feaures);
+		return res;
+	}
+	
+	/**
+	 * Gives the vector (matrix) of descriptors for each segment
+	 * 
+	 * @return float[nbSegments][nbDesc] descriptors for each segment
+	 */
+	public double[][] getDescMatrixDouble() {
+		double[][] res = ConvertStructure.arrayLists2doubleMatrix(feaures);
 		return res;
 	}
 
@@ -94,6 +108,26 @@ abstract public class Descriptors<T extends Labelling> {
 				str = str + Float.toString(feaures.get(i).get(j)) + ", ";
 			}
 			Logging.logMsg(str);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void normFeatures() {
+		// over lal fatures
+		for (int i = 0; i < nbFeatures; i++) {
+			// find maxima
+			float max = Float.MIN_VALUE;
+			for (int j = 0; j < nbSegments; j++) {
+				if (feaures.get(j).get(i) > max) {
+					max = feaures.get(j).get(i);
+				}
+			}
+			// norm by range
+			for (int j = 0; j < nbSegments; j++) {
+				feaures.get(j).set(i, feaures.get(j).get(i)/max);
+			}
 		}
 	}
 		

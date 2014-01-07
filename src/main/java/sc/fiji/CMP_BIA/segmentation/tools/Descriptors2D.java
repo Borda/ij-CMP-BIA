@@ -24,8 +24,6 @@ import ij.ImagePlus;
  * @see Labelling2D
  */
 public class Descriptors2D extends Descriptors<Labelling2D> {
-	// number of segments
-	private int nbSegments = 0;
 	// local variables
 	private int Width, Height;
 		
@@ -100,6 +98,7 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 			feaures.get(k).add(  (float)segmColour[k][1] / (float)nbPixels[k] );
 			feaures.get(k).add(  (float)segmColour[k][2] / (float)nbPixels[k] );
 		}
+		nbFeatures += 3;
 	}
 
 	protected void computeColourMean (float[][][] img) {
@@ -155,9 +154,14 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 			haar = HaarWavelets.computeHaarForward(img);
 						
 			// scaling given by haar filter of ration 2
-			w = w /2;
-			h = h /2;
+			w = w / 2;
+			h = h / 2;
 			scale = scale *2;
+			
+			//ImageProcessor tt = new FloatProcessor(haar);
+			//ImagePlus ttt = new ImagePlus();
+			//ttt.setProcessor(tt);
+			//ttt.show();
 			
 			// compute energies by given function
 			energyWaveletHaar(haar, scale);
@@ -188,37 +192,38 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 		Arrays.fill(tmp, 0);
 		int[] count = new int[nbSegments];
 		Arrays.fill(count, 0);
-		int k, x, y;
+		int k;
+		float f, fLH, fHH, fHL;
 		// offsets, we assume half and half decomposition
-		int offsetX = haarFrame.length /scale;
-		int offsetY = haarFrame[0].length /scale;
+		int offsetX = haarFrame.length / 2;
+		int offsetY = haarFrame[0].length / 2;
 				
-		// go over all labeled pixel
-		for (int i=0; i<Width; i++) {
-			for (int j=0; j<Height; j++) {
+		// go over qurter of all positions in the Haar frames 
+		for (int x=0; x<offsetX; x++) {
+			for (int y=0; y<offsetY; y++) {
 				// get labels of given pixel
-				k = segmentation.getLabel(i, j);
-				// scaled positions in the Haar frames 
-				x = i/scale;
-				y = j/scale;
+				k = segmentation.getLabel(x*scale, y*scale);
 				// compute the energy as x^2
 				// region L*H
-				tmp[k] += haarFrame[offsetX +x][y] * haarFrame[offsetX +x][y];
+				fLH = haarFrame[offsetX +x][y];
 				// region H*L
-				tmp[k] += haarFrame[x][offsetY +y] * haarFrame[x][offsetY +y];
+				fHL = haarFrame[x][offsetY +y];
 				// region H*H
-				tmp[k] += haarFrame[offsetX +x][offsetY +y] * haarFrame[offsetX +x][offsetY +y];
+				fHH = haarFrame[offsetX +x][offsetY +y];
 				// increment nb
+				tmp[k] += (fLH*fLH) + (fHL*fHL) + (fHH*fHH);
 				count[k] ++;
 			}
 		}
 				
 		// energy normalization by segment sizes
 		for (int i=0; i<nbSegments; i++) {
-			feaures.get(i).add(  (float)tmp[i] / (float)count[i] );
+			// avoid empty spaces
+			f = (count[i]>0) ? (float)tmp[i] / (float)count[i] : 0;
+			feaures.get(i).add(  f );
 		}
-		
-		// TODO - energy normalization by peak energy
+		 
+		nbFeatures ++;
 	}
 
 	

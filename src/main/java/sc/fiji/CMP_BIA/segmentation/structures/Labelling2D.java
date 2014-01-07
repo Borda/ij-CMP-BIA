@@ -370,6 +370,12 @@ public class Labelling2D extends Labelling {
 //		
 //		overlay.setStrokeColor(clr);
 //		img.setOverlay(overlay);
+
+		// check if it is colour image
+		if (img.getType() != ImagePlus.COLOR_RGB) {		
+			Logging.logMsg("WARING: the image is not RGB image."); 
+			img.setProcessor( img.getProcessor().convertToRGB() );
+		}
 		
 		ImageProcessor ip = img.getProcessor();
 		// ArrayList<int[]> coords = Connectivity2D.findBoundaryPoints(data, Connectivity2D.CONNECT8);

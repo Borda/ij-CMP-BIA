@@ -111,4 +111,26 @@ public class Generators {
 		return idx;
 	}
 	
+	/**
+	 * Random selection of new clusters (initial clusters) from given dataset
+	 * 
+	 * @param data is matrix of data from which the cluster has to be selected
+	 * @param nb is number of selected cluster
+	 * @return float[nbClusters][nbDataElements] of randomly taken data samples
+	 */
+	public static float[][] randomSamples(float[][] data, int nb) {
+		
+		// get random indexes from data
+		int[] rndIdx = Generators.gUniqueRandomIndexes(nb, data.length);
+		
+		// copy randomly taken samples
+		float[][] clts = new float[rndIdx.length][data[0].length];
+		for(int i=0; i<clts.length; i++) {
+			for (int j=0; j<data[i].length; j++) {
+				clts[i][j] = data[rndIdx[i]][j];
+			}
+		}
+				
+		return clts;
+	}
 }

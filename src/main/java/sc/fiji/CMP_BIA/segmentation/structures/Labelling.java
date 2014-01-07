@@ -181,5 +181,47 @@ abstract public class Labelling {
 	 * @return int[][] is list of all boundary points
 	 */
 	abstract public int[][] findMultiClassBoundaryPoints(final int[][] neighbors);
+	
+	/**
+	 * this method modify the LUT such that all indexes in labelling are 
+	 * continuous from 0 up to number of unique elments
+	 * 
+	 * @param lut the original LUT 
+	 * @return int[LUT.lenght] new LUT
+	 */
+	public static int[] determineContinuousLabelling(int[] lut) {
+		// neew lut table
+		int[] res = new int[lut.length];
+		int[] listSub = new int[lut.length];
+		int idx = 0;
+		boolean sub;
+		
+		// for all elem in LUT
+		for (int i = 0; i < lut.length; i++) {
+			// only non empty elements
+			if (lut[i] < 0) {
+				continue;
+			}
+			sub = false;
+			// check if it was substitited
+			for (int j = 0; j < idx; j++) {
+				if (listSub[j] == lut[i]) {
+					sub = true;
+					res[i] = j;
+					break;
+				}
+			}
+			// if it was not subtituted add new id
+			if (! sub) {
+				// put new index
+				res[i] = idx;
+				// save this substitution
+				listSub[idx] = lut[i];
+				idx ++;
+			}
+		}
+		
+		return res;
+	}
 		
 }
