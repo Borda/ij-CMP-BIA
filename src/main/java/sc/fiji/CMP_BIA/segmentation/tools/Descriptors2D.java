@@ -98,7 +98,6 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 			feaures.get(k).add(  (float)segmColour[k][1] / (float)nbPixels[k] );
 			feaures.get(k).add(  (float)segmColour[k][2] / (float)nbPixels[k] );
 		}
-		nbFeatures += 3;
 	}
 
 	protected void computeColourMean (float[][][] img) {
@@ -188,12 +187,13 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 	protected void energyWaveletHaar(float[][] haarFrame, int scale) {
 
 		// init temporary variables
-		float[] tmp = new float[nbSegments];
-		Arrays.fill(tmp, 0);
+		float[][] listF = new float[nbSegments][3];
+		for (float[] l : listF) {	Arrays.fill(l, 0); 		}
+		
 		int[] count = new int[nbSegments];
 		Arrays.fill(count, 0);
 		int k;
-		float f, fLH, fHH, fHL;
+		float f, ff, fLH, fHH, fHL;
 		// offsets, we assume half and half decomposition
 		int offsetX = haarFrame.length / 2;
 		int offsetY = haarFrame[0].length / 2;
@@ -211,7 +211,9 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 				// region H*H
 				fHH = haarFrame[offsetX +x][offsetY +y];
 				// increment nb
-				tmp[k] += (fLH*fLH) + (fHL*fHL) + (fHH*fHH);
+				listF[k][0] += (fLH*fLH);
+				listF[k][1] += (fHL*fHL);
+				listF[k][2] += (fHH*fHH);
 				count[k] ++;
 			}
 		}
@@ -219,11 +221,13 @@ public class Descriptors2D extends Descriptors<Labelling2D> {
 		// energy normalization by segment sizes
 		for (int i=0; i<nbSegments; i++) {
 			// avoid empty spaces
-			f = (count[i]>0) ? (float)tmp[i] / (float)count[i] : 0;
-			feaures.get(i).add(  f );
+			f = (count[i]>0) ? (float)listF[i][0] / (float)count[i] : 0;
+			ff = (count[i]>0) ? (float)listF[i][1] / (float)count[i] : 0;
+			feaures.get(i).add(  f+ff  );	
+			// avoid empty spaces
+			f = (count[i]>0) ? (float)listF[i][2] / (float)count[i] : 0;
+			feaures.get(i).add(  f );	
 		}
-		 
-		nbFeatures ++;
 	}
 
 	

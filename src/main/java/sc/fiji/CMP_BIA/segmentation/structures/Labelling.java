@@ -211,6 +211,7 @@ abstract public class Labelling {
 					break;
 				}
 			}
+			// FIXME - too slow... :(
 			// if it was not subtituted add new id
 			if (! sub) {
 				// put new index

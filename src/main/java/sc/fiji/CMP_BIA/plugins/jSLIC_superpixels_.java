@@ -5,7 +5,7 @@ package sc.fiji.CMP_BIA.plugins;
 
 import java.awt.Color;
 
-import sc.fiji.CMP_BIA.segmentation.superpixels.jSLICe;
+import sc.fiji.CMP_BIA.segmentation.superpixels.jSLICp2D;
 import sc.fiji.CMP_BIA.tools.Logging;
 import ij.IJ;
 import ij.ImagePlus;
@@ -29,7 +29,7 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 	// handler to the image we work with
 	protected ImagePlus image;
 	// jSLIC superpixel instance
-	protected jSLICe sp;
+	protected jSLICp2D sp;
 
 	// segmentation paramters
 	protected int gSize = 30;
@@ -133,7 +133,7 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 		startTime = System.currentTimeMillis();
 		
 		// init jSLIC superpixels
-		sp = new jSLICe(image);
+		sp = new jSLICp2D(image);
 		
 		IJ.showProgress(20.);
 
@@ -169,7 +169,6 @@ public class jSLIC_superpixels_  implements PlugInFilter {
 		// show the segments
 		if (showSegm) {
 			try {
-				// FIXME in case of gray images we cannot create colour segmentation mask
 				ij.IJ.log(" -> show segmentation");
 				sp.getSegmentation().showOverlapLabeling(image, 0.5);
 			} catch (Exception e) {

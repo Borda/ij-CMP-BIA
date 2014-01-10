@@ -30,6 +30,10 @@ public class KMeans {
 	protected float[][] data = null;
 	// internal cluster
 	protected Clusters clusters = null;
+	// ration of samples from subset to be chosen for random init.
+	protected static final float subSetSize = 0.2f;
+	// minimal number of samples per class while random init
+	protected static final int minNbSamples = 25;
 
 	
 	/**
@@ -69,8 +73,8 @@ public class KMeans {
 		Logging.logMsg("KMeans: random init. for "+Integer.toString(nbClusters)+" clusters... ");
 		
 		// take random subset of all data
-		int nbSubData = (int) Math.round(data.length * 0.1);
-		nbSubData = (nbSubData < nbClusters*10) ? nbClusters*10 : nbSubData;
+		int nbSubData = (int) Math.round(data.length * subSetSize);
+		nbSubData = (nbSubData < nbClusters*minNbSamples) ? nbClusters*minNbSamples : nbSubData;
 		float[][] subData = Generators.randomSamples(data, nbSubData);
 		
 		// init random clustering

@@ -3,7 +3,7 @@
 
 These plugins have their home on the [Fiji Wiki](http://fiji.sc/CMP-BIA_tools).
 
-## CMP-BIA ##
+## CMP-BIA tools ##
 
 We extend the ImageJ implementation by our java codes. This project mainly 
 contains implementation of our methods as  plugins in ImageJ (or Fiji) 

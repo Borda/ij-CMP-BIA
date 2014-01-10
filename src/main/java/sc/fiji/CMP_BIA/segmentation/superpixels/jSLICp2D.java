@@ -6,6 +6,7 @@ package sc.fiji.CMP_BIA.segmentation.superpixels;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import sc.fiji.CMP_BIA.segmentation.structures.Labelling;
 import sc.fiji.CMP_BIA.segmentation.structures.Labelling2D;
@@ -27,15 +28,13 @@ import ij.ImagePlus;
  * @see http://rsbweb.nih.gov/ij 
  * 
  */
-public class jSLICe extends jSLIC {
-		
-	// TODO - extension for 3D
-	
+public class jSLICp2D extends jSLIC {
+			
 	/**
 	 * Constructor that sets the input image.
 	 * @param im is the input ImagePlus
 	 */
-	public jSLICe(ImagePlus im) {
+	public jSLICp2D(ImagePlus im) {
 		super(im);
 	}
 	
@@ -117,19 +116,33 @@ public class jSLICe extends jSLIC {
 	 */
 	@Override
 	protected void enforceLabelConnectivity(){
+		// long startTime, estimTime;
+//		HashMap<Integer, ArrayList<Integer>> relabel = new HashMap<Integer, ArrayList<Integer>>();
+		
+		//startTime = System.currentTimeMillis();
 		Logging.logMsg(" -> running...");
 		// split all disconnected components
 		Labelling2D lb = new Labelling2D( Connectivity2D.enforceIndividualRegions(labels2D, Connectivity2D.CONNECT4) );
 		nbLabels = lb.getMaxLabel()+1;
-		
+		//estimTime = System.currentTimeMillis() - startTime;
+		//Logging.logMsg(" -> enforceIndividualRegions() took " + Float.toString((float)estimTime/1000) + "s");
+				
+		//startTime = System.currentTimeMillis();
 		// find the interconnectivity among segments
 		int mSize = 4*gridSize*gridSize;
 		int[] hist = lb.getLabelHist();
 		ArrayList<ArrayList<Integer>> connect = Connectivity2D.findSegmetNeighbors(lb.getData(), lb.getMaxLabel(), Connectivity2D.CONNECT4);
-		
+		//estimTime = System.currentTimeMillis() - startTime;
+		//Logging.logMsg(" -> findSegmetNeighbors() took " + Float.toString((float)estimTime/1000) + "s");
+		//Logging.logMsg(" -> elements " + Integer.toString(hist.length) );
+				
+		//startTime = System.currentTimeMillis();
 		// compute the colour means of all segments
 		int[][] clrMeans = computeColourMeans(lb);
-		
+		//estimTime = System.currentTimeMillis() - startTime;
+		//Logging.logMsg(" -> computeColourMeans() took " + Float.toString((float)estimTime/1000) + "s");
+				
+		//startTime = System.currentTimeMillis();
 		int similarID;
 		float similarVal, rltSize;
 		// init LUT
@@ -158,13 +171,12 @@ public class jSLICe extends jSLIC {
 			rltSize = (float)hist[i] / (float)mSize;
 			//if ( (rltSize*rltSize*Math.log(Math.E+similarVal)) < 1. ) {
 			if ( (rltSize*rltSize*(1+similarVal)) < 0.25 ) {  // BEST
+			//if ( (rltSize*rltSize*(1+similarVal)) < 0.5 ) {
 			//if ( (rltSize*rltSize*(1+similarVal)*regul) < 1. ) {
 			//if ( (rltSize*rltSize*Math.log(Math.E+similarVal)/regul) < 0.05 ) {
 			//if (hist[i]>0  &&  hist[i] < (mSize/16)) {
 
-				//System.out.println("  size: "+Float.toString(rltSize)+" clr diff: "+Float.toString(similarVal));
-				//System.out.println("  relabel("+Integer.toString(i)+"): "+Integer.toString(lut[i])+" -> "+Integer.toString(lut[connect.get(i).get(similarID)])+" ("+Integer.toString(lut[connect.get(i).get(0)])+")");
-
+//				relabel.put( lut[ similarID ] , new ArrayList<Integer>(lut[i]) );
 				lut[i] = lut[ similarID ];
 				//lut[i] = lut[  connect.get(i).get(similarID) ];
 				//lut[i] = lut[ connect.get(i).get(0) ];
@@ -172,27 +184,73 @@ public class jSLICe extends jSLIC {
 				if (i != lut[i]) {
 					updateClrMeansAndHist(clrMeans, hist, i, lut[i]);
 				}
-				
-				for (int j = 0; j < i; j++) {
-					if (lut[j] == i) {
-						lut[j] = lut[i];
-						if (lut[j] != lut[i]) {
-							updateClrMeansAndHist(clrMeans, hist, lut[j], lut[i]);
-						}
-					}
-				}
+
+				//updateClustersAndLUT(lut, hist, clrMeans, i);
+//				updateClustersAndLUT(lut, hist, clrMeans, i, relabel);
 			}
 		}
+		//estimTime = System.currentTimeMillis() - startTime;
+		//Logging.logMsg(" -> merging() took " + Float.toString((float)estimTime/1000) + "s");
 		
+		//startTime = System.currentTimeMillis();
 		// relabelling
 		lut = Labelling.determineContinuousLabelling(lut);
 		lb.reLabel(lut);
+		//estimTime = System.currentTimeMillis() - startTime;
+		//Logging.logMsg(" -> determineContinuousLabelling() took " + Float.toString((float)estimTime/1000) + "s");
 		
 		labels2D = lb.getData();
 		
 		//super.enforceLabelConnectivity();
 
 		Logging.logMsg(" -> done.");
+	}
+
+
+	/**
+	 * 
+	 * @param lut
+	 * @param hist
+	 * @param clrMeans
+	 * @param idx
+	 */
+	@SuppressWarnings("unused")
+	private void updateClustersAndLUT(int[] lut, int[] hist, int[][] clrMeans, int idxOld) {
+		int idxNew = lut[idxOld];
+		// fixme - too slow... reimplemented as updateClustersAndLUT
+		for (int j = 0; j < idxOld; j++) {
+			if (lut[j] == idxOld) {
+				//updateClrMeansAndHist(clrMeans, hist, j, idxNew);
+				lut[j] = idxNew;
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param lut
+	 * @param hist
+	 * @param clrMeans
+	 * @param idxOld
+	 * @param relabel
+	 */
+	@SuppressWarnings("unused")
+	private void updateClustersAndLUT(int[] lut, int[] hist, int[][] clrMeans, int idxOld, HashMap<Integer, ArrayList<Integer>> relabel) {
+		int idxNew = lut[idxOld];
+		// find labels relabeld by this label
+		if (relabel.containsKey(idxOld)) {
+			int j;
+			// upadte segment by the previous segments
+			ArrayList<Integer> subList = relabel.get(idxOld);
+			for (int i = 0; i < subList.size(); i++) {
+				j = subList.get(i);
+				//updateClrMeansAndHist(clrMeans, hist, j, idxNew);
+				lut[j] = idxNew;
+			}
+			// merge lists
+			relabel.get(idxNew).addAll(subList);
+			relabel.remove(idxOld);
+		}
 	}
 
 	/**

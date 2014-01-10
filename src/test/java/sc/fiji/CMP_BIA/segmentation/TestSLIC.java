@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sc.fiji.CMP_BIA.segmentation.superpixels.jSLIC;
-import sc.fiji.CMP_BIA.segmentation.superpixels.jSLICe;
+import sc.fiji.CMP_BIA.segmentation.superpixels.jSLICp2D;
 import sc.fiji.CMP_BIA.tools.Prints;
 
 
@@ -16,7 +16,7 @@ public class TestSLIC {
 
 	ImagePlus img = null;
 	jSLIC sp = null;
-	jSLICe sp2 = null;
+	jSLICp2D sp2 = null;
 	String path = System.getProperty("user.dir") + "/src/test/resources/imgs/letter_a.png";
 	
 	/**
@@ -47,7 +47,7 @@ public class TestSLIC {
 			sp.getSegmentation().showLabelling();
 		
 			// EXTENSION
-			sp2 = new jSLICe(img);
+			sp2 = new jSLICp2D(img);
 			sp2.process(3, 0.2f);
 			//sp.getSegmentation().printData();
 			sp2.getSegmentation().showLabelling();

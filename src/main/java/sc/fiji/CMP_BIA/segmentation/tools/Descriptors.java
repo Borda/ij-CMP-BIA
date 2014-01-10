@@ -34,8 +34,6 @@ abstract public class Descriptors<T extends Labelling> {
 	protected ArrayList<ArrayList<Float>> feaures;
 	// number of segments
 	protected int nbSegments = 0;
-	// 
-	protected int nbFeatures = 0;
 	
 	/**
 	 * Constructor which asked for a image and its reliable segmentation  
@@ -115,18 +113,26 @@ abstract public class Descriptors<T extends Labelling> {
 	 * 
 	 */
 	public void normFeatures() {
-		// over lal fatures
+		int nbFeatures = feaures.get(0).size();
+		// over all fatures
 		for (int i = 0; i < nbFeatures; i++) {
-			// find maxima
+			// find maxima and min
+			float min = Float.MAX_VALUE;
 			float max = Float.MIN_VALUE;
+			float val, range;
 			for (int j = 0; j < nbSegments; j++) {
+				if (feaures.get(j).get(i) < min) {
+					min = feaures.get(j).get(i);
+				}
 				if (feaures.get(j).get(i) > max) {
 					max = feaures.get(j).get(i);
 				}
 			}
 			// norm by range
+			range = max - min;
 			for (int j = 0; j < nbSegments; j++) {
-				feaures.get(j).set(i, feaures.get(j).get(i)/max);
+				val = (feaures.get(j).get(i) - min) / range;
+				feaures.get(j).set(i, val);
 			}
 		}
 	}

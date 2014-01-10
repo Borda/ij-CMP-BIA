@@ -173,6 +173,7 @@ public class jSLIC {
 		// according the VLFeat library the regul is in range {0,1}
 		this.factor = (regul*regul) * (float)(gridSize);
 		float err, lastErr = Float.MAX_VALUE;
+		long startTime, estimTime;
 		
 		Logging.logMsg("SLIC: running with gridSize: " + Integer.toString(gridSize) + " regularity " + Float.toString(regul));
 		
@@ -181,7 +182,8 @@ public class jSLIC {
 		float initErr = computeResidualError();
 				
 		for (int i=0; i<maxIter; i++) {
-		
+
+			startTime = System.currentTimeMillis();
 			assignment();
 
 			err = computeResidualError();
@@ -196,6 +198,9 @@ public class jSLIC {
 			} else {
 				lastErr = err;
 			}
+			
+			estimTime = System.currentTimeMillis() - startTime;
+			Logging.logMsg(" -> took " + Float.toString((float)estimTime/1000) + "s");
 						
 		}
 				
@@ -203,10 +208,14 @@ public class jSLIC {
 		// do not belong to the same connected component as their cluster center 
 		// may remain. To correct for this, such pixels are assigned the label 
 		// of the nearest cluster center using a connected components algorithm.
+		startTime = System.currentTimeMillis();
 		
 		// the original post-processing by authors which relabel by label on top
 		Logging.logMsg("SLIC: enforce label connectivity.");
 		enforceLabelConnectivity();
+		
+		estimTime = System.currentTimeMillis() - startTime;
+		Logging.logMsg(" -> took " + Float.toString((float)estimTime/1000) + "s");
 		
 		Logging.logMsg("SLIC: DONE.");
 	}
