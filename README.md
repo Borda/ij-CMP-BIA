@@ -30,4 +30,4 @@ and some other useful API for image segmentation and registration.
 
 ## Reference ##
 
-comming soon...
+[1] Borovec, J., & Kybic, J. (2014). jSLIC : superpixels in ImageJ. In Z. Kunbelova & J. Heller (Eds.), Computer Vision Winter Workshop (pp. 14–18). Praha: Czech Society for Cybernetics and Informatics. Retrieved from ftp://cmp.felk.cvut.cz/pub/cmp/articles/borovec/Borovec-CVWW2014.pdf
