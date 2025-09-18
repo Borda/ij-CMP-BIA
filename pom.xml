@@ -11,13 +11,27 @@
 
   <name>CMP_BIA</name>
   <url>http://maven.apache.org</url>
-    
+  <inceptionYear>2014</inceptionYear>
+
 	<parent>
 		<!-- NB: for project parent -->
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
 		<version>23.0.0</version>
 	</parent>
+
+	<organization>
+		<name>CMP at CTU</name>
+		<url>http://cmp.felk.cvut.cz/</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>BSD-2-Clause</name>
+			<url>https://opensource.org/licenses/BSD-2-Clause</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<properties>    
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
@@ -33,6 +47,10 @@
         <!-- Ensure compilation on CI JDK -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- License properties required by enforcer -->
+        <license.licenseName>BSD-2-Clause</license.licenseName>
+        <license.copyrightOwners>Jiri Borovec</license.copyrightOwners>
 	</properties>
 
 
@@ -90,6 +108,31 @@
            <organizationUrl>http://cmp.felk.cvut.cz/</organizationUrl>
         </developer>
 	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Jiri Borovec</name>
+			<email>jiri.borovec@fel.cvut.cz</email>
+			<organization>CMP at CTU</organization>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>https://forum.image.sc/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/Borda/ij-CMP-BIA/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>GitHub Actions</system>
+		<url>https://github.com/Borda/ij-CMP-BIA/actions</url>
+	</ciManagement>
 
 	<scm>
 		<connection>scm:git:https://github.com/Borda/ij-CMP-BIA.git</connection>
