@@ -22,8 +22,5 @@ jobs:
           java-version: "11"
           cache: maven
 
-      - name: Build with Maven (skip tests)
-        run: mvn -B -ntp -DskipTests package
-
-      - name: Run tests
-        run: mvn -B -ntp test
+      - name: Build with Maven
+        run: mvn -B -ntp package
