@@ -1,14 +1,14 @@
-name: CI
+name: build as CI
 
 on:
   push:
-    branches:
-      - "**"
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   build:
-    name: Build on Linux (Maven, skip tests)
+    name: Build on Linux (Maven)
     runs-on: ubuntu-latest
 
     steps:
@@ -24,3 +24,6 @@ jobs:
 
       - name: Build with Maven (skip tests)
         run: mvn -B -ntp -DskipTests package
+
+      - name: Run tests
+        run: mvn -B -ntp test

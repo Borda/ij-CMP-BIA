@@ -16,24 +16,28 @@
 		<!-- NB: for project parent -->
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>1.106</version>
+		<version>23.0.0</version>
 	</parent>
-  
+
 	<properties>    
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		
+
 		<!-- NB: Specify formatting of the maven.build.timestamp property. -->
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-		
+
 		<!-- NB: Use given version or higher. -->
 		<imagej1.version>[1.48c,)</imagej1.version>
 		<!-- NB: Location of FIJI or ImageJ application. -->
-		<imagej.app.directory>/home.dokt/borovji3/Applications/Fiji.app</imagej.app.directory> 
+		<imagej.app.directory>/home.dokt/borovji3/Applications/Fiji.app</imagej.app.directory>
+
+        <!-- Ensure compilation on CI JDK -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	
-  
+
+
 	<dependencies>
 	<!-- NB: List of used libraries. -->    
 		<dependency>
@@ -47,7 +51,7 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math</artifactId>
@@ -66,16 +70,8 @@
 		</dependency>
 	</dependencies>
 
-	<!-- NB: for project parent -->
+	<!-- NB: Keep only the local repository; remote HTTP repos are deprecated/blocked -->
 	<repositories>
-		<repository>
-			<id>imagej.releases</id>
-			<url>http://maven.imagej.net/content/repositories/releases</url>
-		</repository>
-		<repository>
-			<id>imagej.snapshots</id>
-			<url>http://maven.imagej.net/content/repositories/snapshots</url>
-		</repository>
 		<!-- NB: local repository inside this project -->
 		<repository>
 			<id>project.local</id>
