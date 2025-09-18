@@ -1,5 +1,4 @@
 # ImageJ plugins by CMP-BIA group #
-===============================
 
 These plugins have their home on the [Fiji Wiki](http://fiji.sc/CMP-BIA_tools).
 
@@ -30,4 +29,4 @@ and some other useful API for image segmentation and registration.
 
 ## Reference ##
 
-[1] Borovec, J., & Kybic, J. (2014). jSLIC : superpixels in ImageJ. In Z. Kunbelova & J. Heller (Eds.), Computer Vision Winter Workshop (pp. 14–18). Praha: Czech Society for Cybernetics and Informatics. Retrieved from ftp://cmp.felk.cvut.cz/pub/cmp/articles/borovec/Borovec-CVWW2014.pdf
+[1] Borovec, J., & Kybic, J. (2014). [jSLIC : superpixels in ImageJ](https://cmp.felk.cvut.cz/cvww2014/papers/32/32.pdf). In Z. Kunbelova & J. Heller (Eds.), Computer Vision Winter Workshop (pp. 14–18). Praha: Czech Society for Cybernetics and Informatics.
