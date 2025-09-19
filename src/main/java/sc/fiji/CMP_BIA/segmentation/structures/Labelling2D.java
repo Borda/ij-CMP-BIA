@@ -513,6 +513,13 @@ public class Labelling2D extends Labelling {
 		}
 		// IO process
 		try {
+			// Create parent directories if they don't exist
+			java.io.File file = new java.io.File(path);
+			java.io.File parentDir = file.getParentFile();
+			if (parentDir != null && !parentDir.exists()) {
+				parentDir.mkdirs();
+			}
+
 			out = new PrintWriter(path, "UTF-8");
 			// write data
 			out.println(strDims);
