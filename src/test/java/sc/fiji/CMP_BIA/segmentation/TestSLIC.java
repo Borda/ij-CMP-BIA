@@ -1,5 +1,6 @@
 package sc.fiji.CMP_BIA.segmentation;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 
 import ij.ImagePlus;
@@ -18,7 +19,7 @@ public class TestSLIC {
 	jSLIC sp = null;
 	jSLICp2D sp2 = null;
 	String path = System.getProperty("user.dir") + "/src/test/resources/imgs/letter_a.png";
-	
+
 	/**
 	 * 
 	 */
@@ -27,7 +28,10 @@ public class TestSLIC {
 		// init image / load
 		if ( (new File(path)).exists() ) {
 			img = new ImagePlus( path );
-			img.show();
+			// Only show image if not in headless environment
+			if (!GraphicsEnvironment.isHeadless()) {
+				img.show();
+			}
 		}
 	}
 	
@@ -44,13 +48,19 @@ public class TestSLIC {
 			sp = new jSLIC(img);
 			sp.process(3, 0.2f);
 			//sp.getSegmentation().printData();
-			sp.getSegmentation().showLabelling();
-		
+			// Only show segmentation if not in headless environment
+			if (!GraphicsEnvironment.isHeadless()) {
+				sp.getSegmentation().showLabelling();
+			}
+
 			// EXTENSION
 			sp2 = new jSLICp2D(img);
 			sp2.process(3, 0.2f);
 			//sp.getSegmentation().printData();
-			sp2.getSegmentation().showLabelling();
+			// Only show segmentation if not in headless environment
+			if (!GraphicsEnvironment.isHeadless()) {
+				sp2.getSegmentation().showLabelling();
+			}
 		
 		} else {
 			System.out.println("ERROR: resources image '"+path+"' was not found!");
