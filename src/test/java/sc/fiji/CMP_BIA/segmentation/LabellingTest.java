@@ -4,6 +4,7 @@
 package sc.fiji.CMP_BIA.segmentation;
 
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
 
 import ij.ImagePlus;
 import ij.process.ShortProcessor;
@@ -107,10 +108,16 @@ public class LabellingTest {
 		
 		System.out.println("\n Show RIO: ");
 		ImagePlus im = new ImagePlus("test", new ShortProcessor(lb.getDims()[0], lb.getDims()[1]));
-		im.show();
-		lb.showOverlapROIs(im);	
-		lb.showOverlapContours(im, Color.RED);
-		lb.showOverlapLabeling(im, 0.5);
+
+		// Only show GUI components if not in headless environment
+		if (!GraphicsEnvironment.isHeadless()) {
+			im.show();
+			lb.showOverlapROIs(im);	
+			lb.showOverlapContours(im, Color.RED);
+			lb.showOverlapLabeling(im, 0.5);
+		} else {
+			System.out.println("Skipping GUI operations in headless environment");
+		}
 		
 		//GeneralTest.wait(10);
 						

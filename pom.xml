@@ -11,35 +11,55 @@
 
   <name>CMP_BIA</name>
   <url>http://maven.apache.org</url>
-    
+  <inceptionYear>2014</inceptionYear>
+
 	<parent>
 		<!-- NB: for project parent -->
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>1.106</version>
+		<version>23.0.0</version>
 	</parent>
-  
+
+	<organization>
+		<name>CMP at CTU</name>
+		<url>http://cmp.felk.cvut.cz/</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>BSD-2-Clause</name>
+			<url>https://opensource.org/licenses/BSD-2-Clause</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<properties>    
 		<!-- NB: Avoid platform encoding warning when copying resources. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		
+
 		<!-- NB: Specify formatting of the maven.build.timestamp property. -->
 		<maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-		
-		<!-- NB: Use given version or higher. -->
-		<imagej1.version>[1.48c,)</imagej1.version>
+
 		<!-- NB: Location of FIJI or ImageJ application. -->
-		<imagej.app.directory>/home.dokt/borovji3/Applications/Fiji.app</imagej.app.directory> 
+		<imagej.app.directory>/home.dokt/borovji3/Applications/Fiji.app</imagej.app.directory>
+
+        <!-- Ensure compilation on CI JDK -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!-- License properties required by enforcer -->
+        <license.licenseName>BSD-2-Clause</license.licenseName>
+        <license.copyrightOwners>Jiri Borovec</license.copyrightOwners>
 	</properties>
-	
-  
+
+
 	<dependencies>
 	<!-- NB: List of used libraries. -->    
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
-			<version>${imagej1.version}</version>
+			<version>1.54g</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -47,7 +67,7 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math</artifactId>
@@ -59,23 +79,32 @@
 			<version>3.2</version>
 		</dependency>
 
+		<!-- JML dependency commented out as it's not available on Maven Central
 		<dependency>
 			<groupId>net.sourceforge</groupId>
 			<artifactId>jml</artifactId>
 			<version>2.8-SNAPSHOT</version>
 		</dependency>
+		-->
 	</dependencies>
 
-	<!-- NB: for project parent -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/TestThirdPartLibsJML.java</exclude>
+						<exclude>**/GeneralTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- NB: Keep only the local repository; remote HTTP repos are deprecated/blocked -->
 	<repositories>
-		<repository>
-			<id>imagej.releases</id>
-			<url>http://maven.imagej.net/content/repositories/releases</url>
-		</repository>
-		<repository>
-			<id>imagej.snapshots</id>
-			<url>http://maven.imagej.net/content/repositories/snapshots</url>
-		</repository>
 		<!-- NB: local repository inside this project -->
 		<repository>
 			<id>project.local</id>
@@ -94,6 +123,31 @@
            <organizationUrl>http://cmp.felk.cvut.cz/</organizationUrl>
         </developer>
 	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Jiri Borovec</name>
+			<email>jiri.borovec@fel.cvut.cz</email>
+			<organization>CMP at CTU</organization>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>https://forum.image.sc/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/Borda/ij-CMP-BIA/issues</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>GitHub Actions</system>
+		<url>https://github.com/Borda/ij-CMP-BIA/actions</url>
+	</ciManagement>
 
 	<scm>
 		<connection>scm:git:https://github.com/Borda/ij-CMP-BIA.git</connection>
