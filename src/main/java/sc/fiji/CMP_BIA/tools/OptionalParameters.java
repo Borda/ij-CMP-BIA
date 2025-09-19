@@ -17,6 +17,9 @@ public class OptionalParameters {
 	 * @param params Initial parameter map
 	 */
 	public OptionalParameters(HashMap<String, Double> params) {
+		if (params == null) {
+			throw new IllegalArgumentException("Parameters cannot be null");
+		}
 		this.parameters = new HashMap<String, Double>(params);
 	}
 
